@@ -50,7 +50,7 @@ i++：先进行表达式的运算，然后再自加1
 
 ## 根据上面问题提出来的延伸
 ```
-for(var i = 0; i <= 3; i++>) {
+for(var i = 0; i <= 3; i++) {
     setTimeout(function() {
         console.log(i)
     }, 0)
