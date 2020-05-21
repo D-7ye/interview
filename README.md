@@ -83,6 +83,18 @@ function fn() {
 1. 私有化属性
 2. 有些计算会用到闭包
 
+### 将1000转换成1,000显示
+Number的toLocalString()方法返回某种语言系统下数字的表示字符串，参数可以为空，也可以指定语言，如下：
+```
+1000.toLocalString('zh-Hans-CN', {
+    style: 'currency',
+    currency: 'CNY'
+})
+```
+
+### ajax原理
+暂时总结的是：客户端发起请求后，该请求发送给xhr（xmlHttpRequest）,xhr再将数据发送给服务器，服务器响应请求，将返回结果发送给xhr，xhr接受数据，进行数据处理以及dom操作
+
 # vue部分
 
 ## v-if和v-show的区别以及各自的应用场景
