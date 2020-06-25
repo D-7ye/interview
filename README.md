@@ -12,6 +12,90 @@
 ## 盒模型
 使用box-sizing: border-box;
 
+# html、css部分
+## 元素垂直水平居中
+### 定宽居中
+1. absolute+负margin
+```
+.box {
+	width: 100px;
+    height: 100px;
+    background: red;
+    position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -50px;
+	margin-top: -50px;
+}
+```
+2. absolute+margin: auto
+```
+.box {
+	width: 100px;
+	height: 100px;
+	background: red;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+}
+```
+3. absolute+calc函数
+```
+.box {
+	width: 100px;
+	height: 100px;
+	background: red;
+	position: absolute;
+	top: calc(50% - 50px);
+	left: calc(50% - 50px);
+}
+```
+### 不定宽居中
+1. absolute + transform
+```
+.box {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+```
+2. flex
+```
+.father {
+	width: 300px;
+	height: 300px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.child {
+	...
+}
+```
+3. table布局
+```
+.father {
+	width: 300px;
+	height: 300px;
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}
+.child {
+	display: inline-block;
+}
+```
+
+## 移动端适配
+### rem布局
+
+### vh/vw + flex + px
+
+
 # javascript部分
 
 ## var, let, const的区别
@@ -70,6 +154,7 @@ for(var i = 0; i <= 3; i++) {
 // 求打印出来的值： 4个4
 ```
 我的理解是，setTimeout并没有执行，当i=3时，执行了一遍i++后，然后才运行的setTimeout
+
 ### 考校的知识点
  * 关于for循环的执行顺序
     > 1. var i = 0;
@@ -80,6 +165,7 @@ for(var i = 0; i <= 3; i++) {
 
 ## 闭包
 闭包是指在一个函数内，访问外部函数内的变量，并把这个函数返回到外面
+
 ### 例子
 ```
 function fn() {
@@ -121,6 +207,7 @@ await调用后，生成一个Promise对象，可以使用.then()/.catch()处理�
 ### 区别
 v-if的显示隐藏是把dom元素整个的渲染或者删除，所以每次v-if控制的显示或者隐藏，都会伴随着大量的性能消耗
 v-show的显示隐藏是控制元素的display属性
+
 ### 应用场景
 如果需要频繁切换元素的显示隐藏，可以用v-show, 如果少量显示隐藏或者只显示一次，可以选择用v-if
 
@@ -128,9 +215,62 @@ v-show的显示隐藏是控制元素的display属性
 
 ### router.push：等同于router-link，调用时，会在history栈添加一条新纪录，点击回退按钮，可以回到上一个页面
 举个例子：假如从a -> b之后，又想从b -> c，调用push方法会向history栈中添加一条记录，然后跳转到c页面，在当前路由点击浏览器的回退按钮， 则回到b
+
 ### router.replace：不会向history栈中添加记录，如同这个名字一样，替换掉当前的路由地址
 举个栗子：假如从a -> b之后，又想从b -> c，调用replace方法后，内部直接将当前页面的路由地址替换成c的地址，在当前路由页点击回退按钮，会直接回到a页面
+
 ### router.go：接受一个整型参数，正数为前进n步，负数为回退n步
+
+## MVVM原理
+* M：__Model__，代表数据模型，也可以在Model中定义数据修改和操作的业务逻辑
+* V: __View__,代表UI 组件，它负责将数据模型转化成UI 展现出来
+* VM： __ViewModel__, 监听模型数据的改变和控制视图行为、处理用户交互，简单理解就是一个同步View 和 Model的对象，连接Model和View。
+
+## vue响应式原理
+使用Object.defineProperty（）
+
+> vue实现数据双向绑定主要是：采用数据劫持结合发布者-订阅者模式的方式。
+
+> 通过Object.defineProperty（）来劫持各个属性的setter，getter，在数据变动时发布消息给订阅者，触发相应监听回调。
+
+> 当把一个普通 Javascript 对象传给 Vue 实例来作为它的 data 选项时。
+
+> Vue 将遍历它的属性，用 Object.defineProperty 将它们转为 getter/setter。
+
+> 用户看不到 getter/setter，但是在内部它们让 Vue 追踪依赖，在属性被访问和修改时通知变化。
+
+> vue的数据双向绑定 将MVVM作为数据绑定的入口，整合Observer，Compile和Watcher三者。
+
+> 通过Observer来监听自己的model的数据变化，通过Compile来解析编译模板指令（vue中是用来解析 {{}}）。
+
+> 最终利用watcher搭起observer和Compile之间的通信桥梁，达到数据变化 —>视图更新；
+
+> 视图交互变化（input）—>数据model变更双向绑定效果。
+
+### js实现的简单双向绑定
+```
+<body>
+    <div id="app">
+    <input type="text" id="txt">
+    <p id="show"></p>
+</div>
+</body>
+<script type="text/javascript">
+    var obj = {}
+    Object.defineProperty(obj, 'txt', {
+        get: function () {
+            return obj
+        },
+        set: function (newValue) {
+            document.getElementById('txt').value = newValue
+            document.getElementById('show').innerHTML = newValue
+        }
+    })
+    document.addEventListener('keyup', function (e) {
+        obj.txt = e.target.value
+    })
+</script>
+```
 
 # 小程序
 ## 小程序传递数据的几种方式？
